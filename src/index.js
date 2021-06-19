@@ -1,5 +1,6 @@
 import express from 'express';
 // let the db conneect
+import path from 'path';
 import './db/mongoose.js';
 // import model
 import User from './model/user.js';
@@ -7,8 +8,11 @@ import Task from './model/task.js';
 import userRouter from './routers/user.js';
 import taskRouter from './routers/task.js';
  
-const app = express();
+const __dirname = path.resolve();
+console.log("__dirname", __dirname);
 
+const app = express();
+app.use(express.static(__dirname + '/client/dist'));
 // console.log("express() content", app);
 // console.log("express.Route()", express.Router());
 
@@ -57,6 +61,9 @@ app.use(taskRouter);
 //     }
 // });
 
+app.get('*', (req, res) => {
+    res.sendFile(path.resolve(__dirname + '/client/dist', 'index.html'));
+  });
 
 app.listen(port, () => {
     console.log('Server is on port', process.env.LOCAL_PORT);

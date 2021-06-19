@@ -79,6 +79,7 @@ router.post('/users/login', async (req, res) => {
         // 增加token辨識使用者
         // 注意 這裡是我們自己創造一個function叫做generateAuthToken給schema實例, 所以model端要呼叫時必須用userSchema.methods.generateAuthToken來呼叫
         const token = await user.generateAuthToken();
+        res.cookie('authorization', token);
         res.send({
           // 需要把一些隱密資料隱藏起來不要全部透過API丟回去
           // 透過userSchema.methods.toJSON
@@ -96,6 +97,7 @@ router.post('/users/logout', auth, async (req, res) => {
     try {
          req.user.tokens = req.user.tokens.filter((token) => token.token !== req.token);
          await req.user.save(); // req.user已經是User的instance了, 所以可以直接.save()
+         res.clearCookie('authorization');
          res.send(`Hey, you logout! And you have deleted the token : ${req.token}`);
     } catch (e) {
         res.status(500).send();

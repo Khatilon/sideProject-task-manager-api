@@ -21,67 +21,14 @@ class App extends Component {
   }
   // https://docs.github.com/en/rest/overview/endpoints-available-for-github-apps
 
-  // search github user
-  searchUsers = async (text) => {
-    this.setState({ loading: true });
-    const res = await axios.get(`https://api.github.com/search/users?q=${text}&client_id=
-    ${process.env.GITHUB_CLIENT_ID}&client_secret=
-    ${process.env.GITHUB_CLIENT_SECRET}`);
-
-    if (res) {
-      // console.log(res);
-      this.setState({
-        loading: false,
-        users: res.data.items
-      });
-    }
-    const res2 = await axios.get(`/testroute/${text}`);
-
-    console.log('res2', res2);
-    this.setState({checkAPI: res2.data});
-  }
-
-  // Get single Github user
-
-  getUser = async (username) => {
-    this.setState({ loading: true });
-    const res = await axios.get(`https://api.github.com/users/${username}?client_id=
-    ${process.env.GITHUB_CLIENT_ID}&client_secret=
-    ${process.env.GITHUB_CLIENT_SECRET}`);
-
-    if (res) {
-      // console.log(res);
-      this.setState({
-        loading: false,
-        user: res.data
-      });
-    }
+  personProfileCall = async () => {
+    const res = await axios.get('/users/me');
+    console.log(res);
   };
 
-  // Get user repos
-  getUserRepos = async (username) => {
-    this.setState({ loading: true });
-    const res = await axios.get(`https://api.github.com/users/${username}/repos?per_page=5&sort=created:asc&client_id=
-    ${process.env.GITHUB_CLIENT_ID}&client_secret=
-    ${process.env.GITHUB_CLIENT_SECRET}`);
-
-    if (res) {
-      // console.log(res);
-      this.setState({
-        loading: false,
-        repos: res.data
-      });
-    }
-  };
-  // clear user 
-  clearUsers = () => this.setState({ users: [], loading: false });
-
-  // set alert
-  setAlert = (msg, type) => {
-    this.setState({ alert: { msg, type } });
-    setTimeout(() => {
-      this.setState({alert: null});
-    }, 2000);
+  logoutCall = async () => {
+    const res = await axios.post('/users/logout');
+    console.log(res);
   }
 
   async componentDidMount() {
@@ -90,15 +37,13 @@ class App extends Component {
       loading: true
     });
 
-    const res = await axios.get(`https://api.github.com/users?client_id=
-    ${process.env.GITHUB_CLIENT_ID}&client_secret=
-    ${process.env.GITHUB_CLIENT_SECRET}`);
+    const res = await axios.post('/users/login', {
+      email: 'mike@example.com',
+      password: 'Red123!'
+    });
 
     if (res) {
-      this.setState({
-        loading: false,
-        users: res.data
-      });
+      console.log(res)
     }
   }
   
@@ -121,12 +66,12 @@ class App extends Component {
               <div className="app">
                 <Navbar />
                 <div className="container">
-                    {checkAPI && checkAPI.name}
                     <Alert alert={alert}/>
                     <Switch>
                       <Route exact path='/' render={(props) => (
                         <Fragment>
-                          
+                          <button onClick={this.personProfileCall}>Read profile</button>
+                          <button onClick={this.logoutCall}>Loug out</button>
                         </Fragment>
                       )} />
                     </Switch>
