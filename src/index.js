@@ -1,6 +1,7 @@
 import express from 'express';
 // let the db conneect
 import path from 'path';
+import cookieParser from 'cookie-parser';
 import './db/mongoose.js';
 // import model
 import User from './model/user.js';
@@ -37,6 +38,9 @@ const port = process.env.PORT || process.env.LOCAL_PORT;
 
 // let us can get data which type is json
 app.use(express.json());
+
+// 後續可以使用req.cookies取得回傳的object的cookie資料
+app.use(cookieParser());
 
 // register router to let url: localhost:3003/testUser can reply the result
 // 在前後端分離中不需要這步, 因為後端只專門啟server提供API進入點
