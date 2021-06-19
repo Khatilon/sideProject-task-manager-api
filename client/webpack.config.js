@@ -30,7 +30,7 @@ module.exports = {
 	devServer: {
 		// 透過這樣的設定可以解決cors問題, 表面上是在localhost:8080打API, 實際上是打給3003
 		proxy: {
-		  '/': 'http://localhost:3000'
+		  '/': 'http://localhost:3003'
 		}
 	},
 	mode: 'development'
